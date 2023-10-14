@@ -1,38 +1,33 @@
 import React, { useState } from "react";
-import App from "../App.css";
 
-export default function Income() {
+export default function Expense() {
   type User = {
     source: string;
     amount: number;
-    date: Date;
+    date: string;
   };
-  const [userInput, setUserInput] = useState<User>({
+  const [userExpence, setUserExpence] = useState<User>({
     source: "",
     amount: 0,
-    date: new Date(),
+    date: "",
   });
 
   const [userInfo, setUserInfo] = useState<User[]>([]);
-  //   Income
-  function getExpenseSource(e: React.ChangeEvent<HTMLInputElement>) {
-    setUserInput({ ...userInput, source: e.target.value });
+
+  // ===============================
+
+  function getExpence(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    setUserExpence({ ...userExpence, [name]: value });
   }
 
-  // Amount
-  function getAmountOfExpense(e: React.ChangeEvent<HTMLInputElement>) {
-    setUserInput({ ...userInput, amount: Number(e.target.value) });
-  }
-
-  // Date
-  function getDateOfExpense(e: React.ChangeEvent<HTMLInputElement>) {
-    setUserInput({ ...userInput, date: new Date(e.target.value) });
-  }
   //   console.log(userInput);
 
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setUserInfo([...userInfo, userInput]);
+    if (userExpence.source && userExpence.amount && userExpence.date) {
+      setUserInfo([...userInfo, userExpence]);
+    }
   }
   console.log(userInfo);
   return (
@@ -42,22 +37,43 @@ export default function Income() {
           <label>Expense source</label>
           <input
             type="text"
-            placeholder="Electricity bill"
-            onChange={getExpenseSource}
+            onChange={getExpence}
+            name="source"
+            id="source"
+            value={userExpence.source}
+            required
           />
           <label>Amount of expense</label>
-          <input type="number" onChange={getAmountOfExpense} />
+          <input
+            type="number"
+            onChange={getExpence}
+            name="amount"
+            id="amount"
+            value={userExpence.amount}
+            required
+          />
           <label>Date of expense</label>
-          <input type="date" onChange={getDateOfExpense} />
+          <input
+            type="date"
+            onChange={getExpence}
+            name="date"
+            id="date"
+            value={userExpence.date}
+            required
+          />
           <button>Add income</button>
-          {userInfo.map((user) => {
-            return (
-              <ul>
-                <li>{`${user.source}: ${user.amount}EUR on ${user.date}`}</li>
-              </ul>
-            );
-          })}
         </form>
+        <ul>
+          {userInfo.length > 0 ? (
+            userInfo.map((expence, index) => (
+              <li
+                key={index}
+              >{`${expence.source}: ${expence.amount}EUR on ${expence.date}`}</li>
+            ))
+          ) : (
+            <p>No Data for Incom</p>
+          )}
+        </ul>
       </div>
     </div>
   );

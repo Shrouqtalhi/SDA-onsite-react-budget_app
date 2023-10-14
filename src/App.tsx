@@ -3,6 +3,7 @@ import "./App.css";
 import Expense from "./components/Expense";
 import Income from "./components/Income";
 import Target from "./components/Target";
+import Transfer from "./components/Transfer";
 
 function App() {
   const [userInput, setUserInput] = useState("");
@@ -12,6 +13,7 @@ function App() {
       <Income />
       <Expense />
       <Target />
+      <Transfer />
     </div>
   );
 }

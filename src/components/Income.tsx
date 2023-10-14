@@ -1,38 +1,32 @@
 import React, { useState } from "react";
-import App from "../App.css";
 
 export default function Income() {
   type User = {
-    salary: string;
+    source: string;
     amount: number;
-    date: Date;
+    date: string;
   };
-  const [userInput, setUserInput] = useState<User>({
-    salary: "",
+  const [userIncome, setUserIncome] = useState<User>({
+    source: "",
     amount: 0,
-    date: new Date(),
+    date: "",
   });
 
   const [userInfo, setUserInfo] = useState<User[]>([]);
-  //   Income
-  function getIncomeSource(e: React.ChangeEvent<HTMLInputElement>) {
-    setUserInput({ ...userInput, salary: e.target.value });
-  }
 
-  // Amount
-  function getAmountOfIncome(e: React.ChangeEvent<HTMLInputElement>) {
-    setUserInput({ ...userInput, amount: Number(e.target.value) });
-  }
+  // ==================================
 
-  // Date
-  function getDateOfIncome(e: React.ChangeEvent<HTMLInputElement>) {
-    setUserInput({ ...userInput, date: new Date(e.target.value) });
+  function getIncome(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    setUserIncome({ ...userIncome, [name]: value });
   }
   //   console.log(userInput);
 
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setUserInfo([...userInfo, userInput]);
+    if (userIncome.source && userIncome.amount && userIncome.date) {
+      setUserInfo([...userInfo, userIncome]);
+    }
   }
   console.log(userInfo);
   return (
@@ -40,20 +34,42 @@ export default function Income() {
       <div>
         <form className="form" onSubmit={onSubmitHandler}>
           <label>Income source</label>
-          <input type="text" placeholder="Salary" onChange={getIncomeSource} />
+          <input
+            type="text"
+            onChange={getIncome}
+            name="source"
+            id="source"
+            value={userIncome.source}
+          />
           <label>Amount of income</label>
-          <input type="number" onChange={getAmountOfIncome} />
+          <input
+            type="number"
+            onChange={getIncome}
+            name="amount"
+            id="amount"
+            value={userIncome.amount}
+          />
           <label>Date of income</label>
-          <input type="date" onChange={getDateOfIncome} />
+          <input
+            type="date"
+            onChange={getIncome}
+            name="date"
+            id="date"
+            value={userIncome.date}
+          />
           <button>Add income</button>
-          {userInfo.map((user) => {
-            return (
-              <ul>
-                <li>{`${user.salary}: ${user.amount}EUR on ${user.date}`}</li>
-              </ul>
-            );
-          })}
         </form>
+        <ul>
+          {userInfo.length > 0 ? (
+            userInfo.map((Income, index) => (
+              <li
+                key={index}
+              >{`${Income.source}: ${Income.amount}EUR on ${Income.date}`}</li>
+            ))
+          ) : (
+            <p>No data </p>
+          )}
+        </ul>
       </div>
     </div>
   );
