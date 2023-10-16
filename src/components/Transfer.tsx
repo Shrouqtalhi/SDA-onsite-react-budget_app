@@ -1,19 +1,24 @@
 import { useState } from "react";
 
-export default function Transfer() {
-  const [transfer, setTransfer] = useState(0);
+type Prop = {
+  transfer: number;
+  balance: number;
+  setTransfer: React.Dispatch<React.SetStateAction<number>>;
+};
+export default function Transfer(prop: Prop) {
+  // const [saving, setSaving] = useState(0);
   function getUserInput(e: React.ChangeEvent<HTMLInputElement>) {
-    setTransfer(Number(e.target.value));
+    prop.setTransfer(Number(e.target.value));
   }
   console.log();
 
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setTransfer(0);
+    prop.setTransfer(0);
   }
   return (
     <div>
-      <p>Current balance:0</p>
+      <p>Current balance:{prop.balance}</p>
       <form className="form" onSubmit={onSubmitHandler}>
         <label>Transfer to saving account</label>
         <input
@@ -21,7 +26,7 @@ export default function Transfer() {
           name="amount"
           id="amount"
           onChange={getUserInput}
-          value={transfer}
+          value={prop.transfer}
         />
         <button>Transfer</button>
       </form>

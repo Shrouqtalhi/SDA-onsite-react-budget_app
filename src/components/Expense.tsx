@@ -1,6 +1,13 @@
 import React, { useState } from "react";
+import { User } from "../App";
+import { userInfo } from "os";
 
-export default function Expense() {
+type Prop = {
+  userInfo: User[];
+  setUserInfo: React.Dispatch<React.SetStateAction<User[]>>;
+  getBalanceExpense: (amount: number) => void;
+};
+export default function Expense(prop: Prop) {
   type User = {
     source: string;
     amount: number;
@@ -12,13 +19,14 @@ export default function Expense() {
     date: "",
   });
 
-  const [userInfo, setUserInfo] = useState<User[]>([]);
-
   // ===============================
 
   function getExpence(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setUserExpence({ ...userExpence, [name]: value });
+  }
+  function getExpenseAmount(e: React.ChangeEvent<HTMLInputElement>) {
+    setUserExpence({ ...userExpence, amount: Number(e.target.value) });
   }
 
   //   console.log(userInput);
@@ -26,10 +34,11 @@ export default function Expense() {
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (userExpence.source && userExpence.amount && userExpence.date) {
-      setUserInfo([...userInfo, userExpence]);
+      prop.setUserInfo([...prop.userInfo, userExpence]);
+      prop.getBalanceExpense(userExpence.amount);
     }
   }
-  console.log(userInfo);
+  // console.log(userInfo);
   return (
     <div>
       <div>
@@ -46,7 +55,7 @@ export default function Expense() {
           <label>Amount of expense</label>
           <input
             type="number"
-            onChange={getExpence}
+            onChange={getExpenseAmount}
             name="amount"
             id="amount"
             value={userExpence.amount}
@@ -64,8 +73,8 @@ export default function Expense() {
           <button>Add income</button>
         </form>
         <ul>
-          {userInfo.length > 0 ? (
-            userInfo.map((expence, index) => (
+          {prop.userInfo.length > 0 ? (
+            prop.userInfo.map((expence, index) => (
               <li
                 key={index}
               >{`${expence.source}: ${expence.amount}EUR on ${expence.date}`}</li>

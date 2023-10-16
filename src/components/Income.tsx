@@ -1,18 +1,18 @@
 import React, { useState } from "react";
+import { User } from "../App";
 
-export default function Income() {
-  type User = {
-    source: string;
-    amount: number;
-    date: string;
-  };
+type Prop = {
+  userInfo: User[];
+  setUserInfo: React.Dispatch<React.SetStateAction<User[]>>;
+  getBalanceIncome: (amount: number) => void;
+};
+
+export default function Income(prop: Prop) {
   const [userIncome, setUserIncome] = useState<User>({
     source: "",
     amount: 0,
     date: "",
   });
-
-  const [userInfo, setUserInfo] = useState<User[]>([]);
 
   // ==================================
 
@@ -20,15 +20,19 @@ export default function Income() {
     const { name, value } = e.target;
     setUserIncome({ ...userIncome, [name]: value });
   }
+  function getIncomeAmount(e: React.ChangeEvent<HTMLInputElement>) {
+    setUserIncome({ ...userIncome, amount: Number(e.target.value) });
+  }
   //   console.log(userInput);
 
   function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (userIncome.source && userIncome.amount && userIncome.date) {
-      setUserInfo([...userInfo, userIncome]);
+      prop.setUserInfo([...prop.userInfo, userIncome]);
+      prop.getBalanceIncome(userIncome.amount);
     }
   }
-  console.log(userInfo);
+  // console.log(userInfo);
   return (
     <div>
       <div>
@@ -44,7 +48,7 @@ export default function Income() {
           <label>Amount of income</label>
           <input
             type="number"
-            onChange={getIncome}
+            onChange={getIncomeAmount}
             name="amount"
             id="amount"
             value={userIncome.amount}
@@ -60,11 +64,14 @@ export default function Income() {
           <button>Add income</button>
         </form>
         <ul>
-          {userInfo.length > 0 ? (
-            userInfo.map((Income, index) => (
-              <li
-                key={index}
-              >{`${Income.source}: ${Income.amount}EUR on ${Income.date}`}</li>
+          {prop.userInfo.length > 0 ? (
+            prop.userInfo.map((income, index) => (
+              // <li
+              //   // key={index}
+              // >{`${Income.source}: ${Income.amount}EUR on ${Income.date}`}</li>
+              <li key={index}>
+                {income.source}: {income.amount} {income.date}
+              </li>
             ))
           ) : (
             <p>No data </p>
